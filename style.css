@@ -1,0 +1,137 @@
+.d-none {
+  display: none;
+}
+
+.title {
+  font-family: "black han sans";
+  font-size: 70px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.header {
+  height: 29px;
+  margin-bottom: 20px;
+}
+
+.write-btn {
+  float: left;
+  overflow: hidden;
+}
+
+.labels {
+  float: right;
+  /* margin-right: 400px; */
+  margin-right: 100px;
+  overflow: hidden;
+}
+
+.field {
+  float: left;
+  width: 100%;
+}
+
+i {
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #dddddd;
+}
+
+td {
+  height: 80px;
+  cursor: pointer;
+}
+
+.date th {
+  height: 25px;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.right {
+  color: white;
+  background-color: rgba(79, 118, 204, 0.2);
+}
+
+button {
+  border: 1px solid;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+li {
+  padding: 0;
+  margin: 0;
+}
+
+.label {
+  margin: 5px;
+  padding: 5px;
+  border: 1px groove #e7e7e7;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.right .label {
+  color: white;
+  cursor: pointer;
+}
+
+.diary {
+  padding: 30px;
+  width: 320px;
+  height: 380px;
+  border: 2px ridge;
+  border-radius: 5px;
+  position: absolute;
+  top: 145px;
+  left: 90px;
+}
+
+.create {
+  background-color: lightskyblue;
+  height: 400px;
+  width: 500px;
+  padding: 30px;
+}
+
+.update {
+  background-color: rgb(188, 143, 143);
+  height: 400px;
+  width: 500px;
+  padding: 30px;
+}
+
+td li {
+  background-color: rgba(57, 206, 180, 1);
+  margin: 5px;
+  padding: 5px;
+  border: 1px groove #e7e7e7;
+  border-radius: 5px;
+}
+
+.all_list li {
+  background-color: rgba(149, 165, 166, 1);
+  margin: 5px;
+  padding: 5px;
+  border: 1px groove #e7e7e7;
+  border-radius: 5px;
+  color: white;
+}
+
+::selection {
+  background: #f00;
+  color: #fff;
+}
