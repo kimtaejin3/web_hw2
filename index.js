@@ -16,6 +16,18 @@ function generateRandomString(length) {
   return result;
 }
 
+function formatAMPM(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var seconds = date.getSeconds();
+  var ampm = hours >= 12 ? "pm" : "am";
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  var strTime = hours + ":" + minutes + ":" + seconds + ampm;
+  return strTime;
+}
+
 function allowDrop(ev) {
   ev.preventDefault();
 }
@@ -117,6 +129,8 @@ const uFile = document.querySelector("#update-file");
 const updateSubmitBtn = document.querySelector("#update-submit");
 let uId;
 
+const delete_list = document.querySelector(".delete_list");
+
 // 배열로 일지 데이터 관리
 let datas = [];
 let otherMonDatas = [];
@@ -144,6 +158,7 @@ function calculateNewOrderAndDate() {
   $.ajax({
     url: "./updateOrderDate.php",
     type: "get",
+    async: false,
     data: {
       datas: JSON.stringify(datas.concat(otherMonDatas)),
     },
@@ -183,6 +198,7 @@ function update() {
   $.ajax({
     url: "./update.php",
     type: "get",
+    async: false,
     data: {
       id: uId,
       title: uTitle.value,
@@ -354,7 +370,14 @@ function getList() {
   console.log("getList!!");
   const id = generateRandomString(10);
   const dateBox = document.querySelector(`.d${date}`);
-  let order = dateBox.childNodes[0].childNodes.length;
+  // let order = dateBox.childNodes[0].childNodes.length;
+
+  dateBox.childNodes.forEach((node) => {
+    if (node.nodeName === "OL") {
+      order = node.childNodes.length;
+    }
+  });
+
   let mon_number = getMonNumber(mon);
 
   $.ajax({
@@ -378,6 +401,7 @@ function getDatas() {
   $.ajax({
     url: "./getData.php",
     type: "get",
+    async: false,
   }).done(function (data) {
     contentFields.forEach((item) => {
       // item.childNodes[0].textContent = "";
@@ -405,6 +429,29 @@ function getDatas() {
 
     displayDatas();
     console.log(datas);
+  });
+
+  // 굳이 배열에 넣지 않고 바로 DOM요소 추가!
+  $.ajax({
+    url: "./getDeletedData.php",
+    type: "get",
+    async: false,
+  }).done(function (datas) {
+    delete_list.textContent = "";
+    datas.forEach((data) => {
+      if (data === null) return;
+      if (getMonNumber(mon) != data.date.split("-")[1]) return;
+      const item = document.createElement("div");
+      const del = document.createElement("del");
+      del.textContent = data.title;
+      item.append(del);
+      item.classList.add("item");
+      item.dataset.id = data.id;
+      item.dataset.description = data.description;
+      item.dataset.category = data.category;
+      item.dataset.file_name = data.file_name;
+      delete_list.appendChild(item);
+    });
   });
 }
 
@@ -480,6 +527,46 @@ function displayDatas() {
     li2.dataset.file_name = file_name;
     li2.dataset.id = id;
     li2.dataset.category = category;
+    li2.dataset.date = item.date;
+
+    li2.addEventListener("click", (e) => {
+      const delete_time = new Date();
+
+      $.ajax({
+        url: "./addDeletedItem.php",
+        type: "get",
+        async: false,
+        data: {
+          title: e.target.textContent,
+          description: e.target.dataset.description,
+          category: e.target.dataset.category,
+          file_name: e.target.dataset.file_name,
+          id: e.target.dataset.id,
+          date: e.target.dataset.date,
+          delete_time: `${delete_time.getFullYear()}-${
+            delete_time.getMonth() + 1
+          }-${delete_time.getDate()} ${formatAMPM(delete_time)}`,
+        },
+      }).done(function (data) {});
+
+      //delete.php에 ajax - id로
+      $.ajax({
+        url: "./delete.php",
+        type: "get",
+        async: false,
+        data: {
+          id: e.target.dataset.id,
+        },
+      }).done(function (data) {
+        console.log(data);
+        getDatas();
+        calculateNewOrderAndDate();
+        displayDatas();
+      });
+
+      e.target.remove();
+    });
+
     allList.appendChild(li2);
   });
 

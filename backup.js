@@ -73,7 +73,16 @@ function drop_list(ev) {
   // console.log(ev.target.parentNode);
   ev.target.style.backgroundColor = "rgba(57, 206, 180, 1)";
   ev.target.style.color = "black";
-  insertAfter(ev.target, draggable_item);
+
+  console.log(ev.target.parentNode);
+  console.log(draggable_item.parentNode);
+
+  if (ev.target.parentNode === draggable_item.parentNode) {
+    ev.target.parentNode.insertBefore(draggable_item, ev.target);
+  } else {
+    insertAfter(ev.target, draggable_item);
+  }
+
   calculateNewOrderAndDate();
   console.log("datas: ", datas);
   displayDatas();
@@ -110,6 +119,7 @@ let uId;
 
 // 배열로 일지 데이터 관리
 let datas = [];
+let otherMonDatas = [];
 
 function calculateNewOrderAndDate() {
   contentFields.forEach((td) => {
@@ -135,11 +145,9 @@ function calculateNewOrderAndDate() {
     url: "./updateOrderDate.php",
     type: "get",
     data: {
-      datas: JSON.stringify(datas),
+      datas: JSON.stringify(datas.concat(otherMonDatas)),
     },
-  }).done(function (data) {
-    console.log(data);
-  });
+  }).done(function (data) {});
 }
 
 function createSelect(select_obj) {
@@ -183,7 +191,6 @@ function update() {
       file_name: uFile.files.item(0).name,
     },
   }).done(function (data) {
-    console.log(data);
     updateModal.classList.add("d-none");
 
     // uTitle.value = "";
@@ -363,7 +370,6 @@ function getList() {
       file_name: cFile.files.item(0).name,
     },
   }).done(function (data) {
-    console.log(data);
     getDatas();
   });
 }
@@ -373,8 +379,6 @@ function getDatas() {
     url: "./getData.php",
     type: "get",
   }).done(function (data) {
-    console.log(data);
-
     contentFields.forEach((item) => {
       // item.childNodes[0].textContent = "";
       item.childNodes.forEach((item2) => {
@@ -387,12 +391,15 @@ function getDatas() {
     //월이 바뀔 때마다 getDatas가 호출됨
     //datas를 비워줌.
     datas = [];
+    otherMonDatas = [];
     console.log(data);
     data.forEach((item) => {
       if (item == null) return;
 
       if (item.date?.split("-")[1] == getMonNumber(mon)) {
         datas.push(item);
+      } else {
+        otherMonDatas.push(item);
       }
     });
 
@@ -473,7 +480,38 @@ function displayDatas() {
     li2.dataset.file_name = file_name;
     li2.dataset.id = id;
     li2.dataset.category = category;
+
     allList.appendChild(li2);
+  });
+
+  orderData();
+}
+
+function orderData() {
+  contentFields.forEach((contentField) => {
+    let temp;
+    let targetNode;
+    contentField.childNodes.forEach((node) => {
+      if (node.nodeName === "OL" && node.childNodes.length > 1) {
+        targetNode = node;
+        temp = node.childNodes;
+      }
+    });
+
+    if (temp === undefined) return;
+    console.log("temp1:", temp);
+
+    const temp_arr = Array.prototype.slice.call(temp);
+    temp_arr.sort((a, b) => {
+      return +a.dataset.order - +b.dataset.order;
+    });
+
+    targetNode.textContent = "";
+
+    temp_arr.forEach((item) => {
+      targetNode.appendChild(item);
+    });
+    console.log("temp2:", temp_arr);
   });
 }
 

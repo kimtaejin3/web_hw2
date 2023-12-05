@@ -8,9 +8,9 @@ $myfile = fopen("mylists.json","w") or die("unable to open file!");
 echo var_dump($datas_arr);
 
 foreach($datas_arr as $item){
-    $result = '{"id":'.' "'.$item['id'].'"'.", ".'"date":'.' "'.$item["date"].'"'.", ".'"order":'.' "'.$item["order"].'"'.", ".'"title":'.' "'.$item['title'].'"'.", ".'"description":'.' "'.$item['description'].'"'.", ".'"category":'.' "'.$item['category'].'"'.", ".'"file_name":'.' "'.$item['file_name'].'"'."}\n";
- 
+    $result = '{"id":'.' "'.$item['id'].'"'.", ".'"date":'.' "'.$item["date"].'"'.", ".'"order":'.' "'.$item["order"].'"'.", ".'"title":'.' "'.$item['title'].'"'.", ".'"description":'.' "'.$item['description'].'"'.", ".'"category":'.' "'.$item['category'].'"'.", ".'"file_name":'.' "'.$item['file_name'].'"'."}";
     fwrite($myfile,$result);
+    fwrite($myfile,"\n");
 }
 
 ?>
