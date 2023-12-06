@@ -469,26 +469,28 @@ function getDatas() {
           type: "get",
           async: false,
           data: {
-            title: e.target.dataset.title,
-            description: e.target.dataset.description,
-            category: e.target.dataset.category,
-            file_name: e.target.dataset.file_name,
-            id: e.target.dataset.id,
-            date: e.target.dataset.date,
+            title: item.dataset.title,
+            description: item.dataset.description,
+            category: item.dataset.category,
+            file_name: item.dataset.file_name,
+            id: item.dataset.id,
+            date: item.dataset.date,
             order: order + 1,
           },
+        }).done(function (data) {
+          console.log(data);
+          $.ajax({
+            url: "./removeDeletedItem.php",
+            type: "get",
+            async: false,
+            data: {
+              id: item.dataset.id,
+            },
+          }).done(function (data) {
+            console.log(data);
+            getDatas();
+          });
         });
-
-        $.ajax({
-          url: "./removeDeletedItem.php",
-          type: "get",
-          async: false,
-          data: {
-            id: e.target.dataset.id,
-          },
-        });
-
-        getDatas();
       });
       delete_list.appendChild(item);
     });
