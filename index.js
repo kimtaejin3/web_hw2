@@ -447,9 +447,49 @@ function getDatas() {
       item.append(del);
       item.classList.add("item");
       item.dataset.id = data.id;
+      item.dataset.title = data.title;
       item.dataset.description = data.description;
       item.dataset.category = data.category;
       item.dataset.file_name = data.file_name;
+      item.dataset.date = data.date;
+
+      const dateBox = document.querySelector(`.d${data.date.split("-")[2]}`);
+      // let order = dateBox.childNodes[0].childNodes.length;
+
+      dateBox.childNodes.forEach((node) => {
+        if (node.nodeName === "OL") {
+          order = node.childNodes.length;
+        }
+      });
+
+      item.addEventListener("click", (e) => {
+        alert("미완료로 표시됩니다.");
+        $.ajax({
+          url: "./create.php",
+          type: "get",
+          async: false,
+          data: {
+            title: e.target.dataset.title,
+            description: e.target.dataset.description,
+            category: e.target.dataset.category,
+            file_name: e.target.dataset.file_name,
+            id: e.target.dataset.id,
+            date: e.target.dataset.date,
+            order: order + 1,
+          },
+        });
+
+        $.ajax({
+          url: "./removeDeletedItem.php",
+          type: "get",
+          async: false,
+          data: {
+            id: e.target.dataset.id,
+          },
+        });
+
+        getDatas();
+      });
       delete_list.appendChild(item);
     });
   });

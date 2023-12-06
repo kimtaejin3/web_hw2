@@ -9,8 +9,7 @@
 
       $myfile = fopen("mylists.json","a") or die("unable to open file!");
 
-      fwrite($myfile,"\n");
-      $result = '{"id":'.' "'.$id.'"'.", ".'"date":'.' "'.$date.'"'.", ".'"order":'.' "'.$order.'"'.", ".'"title":'.' "'.$title.'"'.", ".'"description":'.' "'.$content.'"'.", ".'"category":'.' "'.$select.'"'.", ".'"file_name":'.' "'.$file_name.'"'."}";
+      $result = '{"id":'.' "'.$id.'"'.", ".'"date":'.' "'.$date.'"'.", ".'"order":'.' "'.$order.'"'.", ".'"title":'.' "'.$title.'"'.", ".'"description":'.' "'.$content.'"'.", ".'"category":'.' "'.$select.'"'.", ".'"file_name":'.' "'.$file_name.'"'."}\n";
       fwrite($myfile,$result);
 
       echo "hello";
